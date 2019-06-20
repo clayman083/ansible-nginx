@@ -1,0 +1,52 @@
+---
+
+nginx:
+  service_dir: "{{ services_dir }}/nginx"
+  certs_dir: "{{ services_dir }}/nginx/certs"
+  conf_dir: "{{ services_dir }}/nginx/conf.d"
+  logs_dir: "/var/log/nginx"
+  services_dir: "{{ services_dir }}/nginx/service"
+  templates_dir: "{{ services_dir }}/nginx/consul-templates"
+
+  letsencrypt:
+    enabled: no
+
+    domains: []
+
+  certificates: []
+
+  container:
+    image: clayman083/nginx
+    name: nginx
+    dns: "{{ private_network.address }}"
+    restart: always
+
+    syslog:
+      enabled: no
+      host: unixgram:///dev/log
+      tag: nginx
+
+  exporter:
+    enabled: no
+
+    host: "{{ private_network.address }}"
+    port: 9107
+
+    container:
+      image: nginx-mtail
+      name: nginx_exporter
+      dns: "{{ private_network.address }}"
+      restart: always
+
+      syslog:
+        enabled: no
+        host: unixgram:///dev/log
+        tag: nginx_exporter
+
+    service:
+      name: nginx-exporter
+      tags:
+        - "{{ env }}"
+      meta:
+        hostname: "{{ ansible_hostname }}"
+        tier: "{{ env }}"

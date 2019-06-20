@@ -1,0 +1,13 @@
+{{ nginx.logs_dir }}/**/*.log {
+    daily
+    missingok
+    rotate 30
+    compress
+    delaycompress
+    notifempty
+    create 640 root root
+    sharedscripts
+    postrotate
+        docker exec -it {{ nginx.container.name }} sv hup nginx
+    endscript
+}
