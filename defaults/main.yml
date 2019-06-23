@@ -27,21 +27,8 @@ nginx:
       tag: nginx
 
   exporter:
-    enabled: no
-
     host: "{{ private_network.address }}"
-    port: 9107
-
-    container:
-      image: nginx-mtail
-      name: nginx_exporter
-      dns: "{{ private_network.address }}"
-      restart: always
-
-      syslog:
-        enabled: no
-        host: unixgram:///dev/log
-        tag: nginx_exporter
+    port: 3093
 
     service:
       name: nginx-exporter

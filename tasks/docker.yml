@@ -4,11 +4,11 @@
   file: path={{ item }} state=directory
   with_items:
     - "{{ nginx.service_dir }}"
-    - "{{ nginx.service_dir }}/exporter"
     - "{{ nginx.certs_dir }}"
     - "{{ nginx.conf_dir }}"
     - "{{ nginx.services_dir }}"
     - "{{ nginx.services_dir }}/nginx"
+    - "{{ nginx.services_dir }}/mtail"
     - "{{ nginx.templates_dir }}"
 
 - name: Install packages
@@ -20,13 +20,19 @@
   copy:
     src: nginx.service
     dest: "{{ nginx.services_dir }}/nginx/run"
-    mode: "a+x"
+
+- name: Assemble mtail service file
+  template:
+    src: mtail.service
+    dest: "{{ nginx.services_dir }}/mtail/run"
 
 - name: Upload docker file
   copy: src={{ item.src }} dest={{ item.dest }}
   with_items:
     - src: Dockerfile
       dest: "{{ nginx.service_dir }}/Dockerfile"
+    - src: exporter/progs/nginx.mtail
+      dest: "{{ nginx.service_dir }}/mtail/nginx.mtail"
   notify: restart nginx
 
 - name: Assemble docker-compose file
