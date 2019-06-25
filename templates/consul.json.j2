@@ -1,0 +1,28 @@
+{
+  "services": [
+    {
+      "name": "{{ nginx.exporter.service.name }}",
+{% if nginx.exporter.service.tags %}
+      "tags": ["{{ nginx.exporter.service.tags|join('", "') }}"],
+{% endif %}
+{% if nginx.exporter.service.meta %}
+      "meta": {
+{% for key, value in nginx.exporter.service.meta.items() %}
+        "{{ key }}": "{{ value }}"{% if not loop.last %},{% endif %}
+
+{% endfor %}
+      },
+{% endif %}
+      "address": "{{ nginx.exporter.host }}",
+      "port": {{ nginx.exporter.port }},
+      "checks": [
+        {
+          "id": "nginx_exporter_check",
+          "name": "Prometheus nginx exporter health check",
+          "http": "http://{{ nginx.exporter.host }}:{{ nginx.exporter.port }}",
+          "interval": "20s"
+        }
+      ]
+    }
+  ]
+}
