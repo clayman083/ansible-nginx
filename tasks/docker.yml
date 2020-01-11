@@ -4,6 +4,7 @@
   file: path={{ item }} state=directory
   with_items:
     - "{{ nginx.service_dir }}"
+    - "{{ nginx.service_dir }}/mtail"
     - "{{ nginx.certs_dir }}"
     - "{{ nginx.conf_dir }}"
     - "{{ nginx.services_dir }}"
@@ -20,11 +21,13 @@
   copy:
     src: nginx.service
     dest: "{{ nginx.services_dir }}/nginx/run"
+    mode: u+rwx
 
 - name: Assemble mtail service file
   template:
     src: mtail.service
     dest: "{{ nginx.services_dir }}/mtail/run"
+    mode: u+rwx
 
 - name: Upload docker file
   copy: src={{ item.src }} dest={{ item.dest }}

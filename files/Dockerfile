@@ -1,9 +1,9 @@
-FROM nginx:1.15
+FROM nginx:1.17
 
-ENV CT_VERSION=0.19.5
+ENV CT_VERSION=0.24.0
 ENV CT_URL=https://releases.hashicorp.com/consul-template/${CT_VERSION}/consul-template_${CT_VERSION}_linux_amd64.zip
 
-ENV MTAIL_VERSION=v3.0.0-rc29
+ENV MTAIL_VERSION=v3.0.0-rc33
 ENV MTAIL_URL=https://github.com/google/mtail/releases/download/${MTAIL_VERSION}/mtail_${MTAIL_VERSION}_linux_amd64
 
 # Install required packages

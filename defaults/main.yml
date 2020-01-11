@@ -29,11 +29,3 @@ nginx:
   exporter:
     host: "{{ private_network.address }}"
     port: 3093
-
-    service:
-      name: nginx-exporter
-      tags:
-        - "{{ env }}"
-      meta:
-        hostname: "{{ ansible_hostname }}"
-        tier: "{{ env }}"
