@@ -1,0 +1,40 @@
+---
+
+  - name: Copy certificate
+    copy: src={{ item.certificate.cert }} dest={{ nginx.certs_dir }}/{{ item.name }}.pem
+    when: item.certificate|default(False)
+    with_items: "{{ domains }}"
+
+  - name: Copy certificate key
+    copy: src={{ item.certificate.key }} dest={{ nginx.certs_dir }}/{{ item.name }}.key
+    when: item.certificate|default(False)
+    with_items: "{{ domains }}"
+
+  - name: Copy htpasswd
+    copy: src={{ item.htpasswd }} dest={{ nginx.conf_dir }}/{{ item.name }}.htpasswd
+    when: item.htpasswd|default(False)
+    with_items: "{{ domains }}"
+
+  - name: Assemble consul templates
+    template: src={{ item.consul.template }} dest="{{ nginx.templates_dir }}/{{ item.name }}.conf"
+    when: item.consul|default(False)
+    with_items: "{{ domains }}"
+
+  - name: Prepare folders
+    file: path="{{ nginx.services_dir }}/{{ item.name }}" state=directory
+    when: item.consul|default(False)
+    with_items: "{{ domains }}"
+
+  - name: Assemble consul template service
+    template:
+      src: consul-template.service.j2
+      dest: "{{ nginx.services_dir }}/{{ item.name }}/run"
+      mode: u+rwx
+    when: item.consul|default(False)
+    with_items: "{{ domains }}"
+
+  # - name: Assemble server config
+  #   template: src={{ item.template }} dest={{ nginx.conf_dir }}/{{ item.name }}
+  #   vars:
+  #     server: "{{ item }}"
+  #   with_items: "{{ domains }}"
